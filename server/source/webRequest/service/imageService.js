@@ -18,7 +18,7 @@ class ImageService {
     try {
       const filePath = path.resolve("images", `${imageId}.png`);
 
-      await fs.access(filePath, fs.constants.F_OK);
+      await fs.access(filePath);
 
       return { message: "The file exists" };
     } catch (error) {
