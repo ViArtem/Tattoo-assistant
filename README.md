@@ -1,4 +1,4 @@
-##Tattoo assistant project
+## Tattoo assistant project
 
 This project was created to demonstrate my skill in web development
 
