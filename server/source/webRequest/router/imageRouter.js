@@ -9,3 +9,4 @@ imageRouter.delete("/delete/image", imageController.deleteImage);
 imageRouter.post("/get/image", imageController.getImage);
 
 export { imageRouter };
+

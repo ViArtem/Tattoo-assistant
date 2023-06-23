@@ -181,7 +181,7 @@ function Editor() {
           defaultToolId={TOOLS.TEXT}
         />
       }
-      {hasImg ? (
+      {hasImg && imageId ? (
         <h1 style={{ textAlign: "center" }}>
           The link is not valid, generate a new one
         </h1>

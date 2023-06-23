@@ -154,7 +154,7 @@ class TelegramManager {
         // sends the user all their saved photos
         if (allPhotoArray) {
           const inlineKeyboardForRemovePhoto = new InlineKeyboard()
-            .text("Femove from favorites", "delete")
+            .text("Remove from favorites", "delete")
             .text("Open in editor", "edit")
             .row();
 
