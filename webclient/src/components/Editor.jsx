@@ -20,35 +20,40 @@ function Editor() {
 
   // checking the availability of photos on the server
   useEffect(async () => {
-    const checkImage = await fetch(
-      `${process.env.REACT_APP_SERVER_URL}/get/image`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ imageId }),
+    try {
+      const checkImage = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/get/image`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ imageId }),
+        }
+      );
+
+      const reader = checkImage.body.getReader();
+      let result = "";
+      let done = false;
+
+      while (!done) {
+        const { value, done: streamDone } = await reader.read();
+
+        if (streamDone) {
+          done = true;
+        } else {
+          const chunk = new TextDecoder("utf-8").decode(value);
+          result += chunk;
+        }
       }
-    );
-    const reader = checkImage.body.getReader();
-    let result = "";
-    let done = false;
 
-    while (!done) {
-      const { value, done: streamDone } = await reader.read();
+      const res = JSON.parse(result);
 
-      if (streamDone) {
-        done = true;
-      } else {
-        const chunk = new TextDecoder("utf-8").decode(value);
-        result += chunk;
+      if (res.status != "The file does not exist") {
+        setHasImg(false);
       }
-    }
-
-    const res = JSON.parse(result);
-
-    if (res.status != "The file does not exist") {
-      setHasImg(false);
+    } catch (error) {
+      console.log(error);
     }
   }, []);
 
@@ -85,30 +90,41 @@ function Editor() {
   // Request to delete a photo from the server
   async function closeImgEditor() {
     setFilePath(Math.random());
-    await fetch(`${process.env.REACT_APP_SERVER_URL}/delete/image`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ imageId }),
-    });
+    try {
+      await fetch(`${process.env.REACT_APP_SERVER_URL}/delete/image`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageId }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
     <div>
-      <div style={{ marginLeft: "auto", marginRight: "auto", width: "300px" }}>
-        <input
-          id="imageInput"
-          className="fileInput"
-          type="file"
-          onChange={(e) => {
-            setFilePath(URL.createObjectURL(e.target.files[0]));
-          }}
-        />
-        <span className="fileInputSpan">
-          <label for="imageInput">OPEN NEW FILE</label>
-        </span>
-      </div>
+      {!imageId ? (
+        <div
+          style={{ marginLeft: "auto", marginRight: "auto", width: "300px" }}
+        >
+          <input
+            id="imageInput"
+            className="fileInput"
+            type="file"
+            onChange={(e) => {
+              setFilePath(URL.createObjectURL(e.target.files[0]));
+            }}
+          />
+          <span className="fileInputSpan">
+            <label for="imageInput">OPEN NEW FILE</label>
+          </span>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
       {
         <FilerobotImageEditor
           source={filePath ? filePath : defaultImage}
