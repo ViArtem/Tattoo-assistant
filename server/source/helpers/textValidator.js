@@ -7,6 +7,9 @@ class TextValidator {
    * @returns true if the text is valid, false if it is not
    */
   validateText = async (text) => {
+    if (text === "null" || text === "undefined" || text === "") {
+      return null;
+    }
     return /^[^!@#$%^&*()_+=[\]{};':"\\|<>/?`~]*$/.test(text);
   };
 }

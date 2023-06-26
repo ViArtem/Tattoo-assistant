@@ -13,7 +13,7 @@ class TelegramManager {
   // The function is triggered at the start of the server and the start of the bot.
   botStarted = async () => {
     try {
-      this.bot.start();
+      await this.bot.start();
       await this.processingStartCommand();
       await this.processingSavedCommand();
       await this.processingInlineKeyboard();
